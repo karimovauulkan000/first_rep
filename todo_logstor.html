@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do + LocalStorage</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #0b75df;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .cont {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 350px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            margin-bottom: 15px;
+        }
+
+        .input-cont {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background: #4CAF50; 
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        ol {
+            margin-top: 20px;
+            padding: 0;
+        }
+
+        li {
+            list-style: none; 
+            background: #f9f9f9;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: red;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            padding: 5px 8px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: darkred;
+        }
+    </style>
+</head>
+<body>
+<!-- 
+15. Создание интерактивного списка задач (To-Do List)	Реализовать добавление и удаление задач.
+19. Работа с локальным хранилищем (localStorage)	Сохранять данные и загружать их при перезагрузке страницы. -->
+
+<div class="cont">
+    <h2>📋 Мои задачи</h2>
+
+    <div class="input-cont">
+        <input type="text" id="taskInput" placeholder="Введите задачу">
+        <button id="addBtn">Добавить</button>
+    </div>
+
+    <ol id="taskList"></ol>
+</div>
+
+<script>
+    let input = document.getElementById("taskInput");
+    let addBtn = document.getElementById("addBtn");
+    let list = document.getElementById("taskList");
+
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+
+    function saveTasks() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+        list.innerHTML = "";
+
+        tasks.forEach((task, index) => {
+            const li = document.createElement("li");
+
+            li.innerHTML = `
+                <span>${index + 1}. ${task}</span>
+                <button class="delete-btn" onclick="deleteTask(${index})">🗑️</button>
+            `;
+
+            list.appendChild(li);
+        });
+    }
+
+    function addTask() {
+        const value = input.value.trim();
+
+        if (value === "") {
+            alert("Введите задачу!");
+            return;
+        }
+
+        tasks.push(value);
+        input.value = "";
+
+        saveTasks();
+        renderTasks();
+    }
+
+    function deleteTask(index) {
+        tasks.splice(index, 1);
+
+        saveTasks(); 
+        renderTasks();
+    }
+
+    addBtn.addEventListener("click", addTask);
+
+    input.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            addTask();
+        }
+    });
+
+    renderTasks();
+</script>
+
+</body>
+</html>
